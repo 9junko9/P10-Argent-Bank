@@ -1,0 +1,42 @@
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff; // Remplacez par la couleur de fond souhaitée
+  padding: 0 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.main-nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.main-nav-logo-image {
+  height: 40px; // Ajustez la hauteur de l'image selon vos besoins
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.main-nav-item {
+  display: flex;
+  align-items: center;
+  color: #333; // Couleur du texte
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 16px;
+}
+
+.main-nav-item i {
+  margin-right: 8px; // Espacement entre l'icône et le texte
+}
