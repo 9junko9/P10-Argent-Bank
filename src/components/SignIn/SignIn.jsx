@@ -5,6 +5,7 @@ import Button from "../Button/Button";
 
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/loginSlice";
+
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,23 +15,26 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const handlelogin = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3001/api/v1/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      if (response.ok) {
-        const userData = await response.json();
 
-        dispatch(loginUser(userData));
-        navigate("/user");
+    const response = await fetch("http://localhost:3001/api/v1/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    if (response.ok) {
+      const userData = await response.json();
+
+      await dispatch(loginUser(userData));
+      if (remenberMe) {
+        localStorage.setItem("token", userData.body.token);
+        console.log(userData.body.token);
       }
-    } catch (error) {
-      console.error("erreur de connexion a la base de donnée", error);
-      setErreur("Erreur de conexion");
+      navigate("/user");
+    } else {
+      console.error("Erreur de serveur: " + response.statusText);
+      setErreur("Erreur de serveur: " + response.statusText);
     }
   };
 
