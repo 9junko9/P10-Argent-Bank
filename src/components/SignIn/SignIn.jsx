@@ -4,7 +4,7 @@ import Button from "../Button/Button";
 ("");
 
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../redux/loginSlice";
+import { loginUser, infoUser } from "../../redux/loginSlice";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -26,12 +26,41 @@ const SignIn = () => {
     if (response.ok) {
       const userData = await response.json();
 
-      await dispatch(loginUser(userData));
+      await dispatch(loginUser(userData.body.token));
+      const token = userData.body.token;
+      console.log(token);
       if (remenberMe) {
-        localStorage.setItem("token", userData.body.token);
-        console.log(userData.body.token);
+        localStorage.setItem("token", token);
       }
-      navigate("/user");
+      /***Deuxième requètte pour les infos user***/
+      const userInfoResponse = await fetch(
+        "http://localhost:3001/api/v1/user/profile",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (userInfoResponse.ok) {
+        const userInfo = await userInfoResponse.json();
+        //récupération des data important dans un objet que je stoke dans
+        //login/userProfil grace a l'action infoUser
+        const userData = {
+          email: userInfo.body.email,
+          firstName: userInfo.body.firstName,
+          lastName: userInfo.body.lastName,
+          userName: userInfo.body.userName,
+        };
+        console.log("voici les infos du user :", userData);
+        dispatch(infoUser(userData));
+        navigate("/user");
+      } else {
+        console.error(
+          "Erreur lors de la récupération des données de l'utilisateur:",
+          userInfoResponse.statusText
+        );
+      }
     } else {
       console.error("Erreur de serveur: " + response.statusText);
       setErreur("Erreur de serveur: " + response.statusText);
