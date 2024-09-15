@@ -5,6 +5,7 @@ import Button from "../Button/Button";
 
 import { useDispatch } from "react-redux";
 import { loginUser, infoUser } from "../../redux/loginSlice";
+import { useSelector } from "react-redux";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ const SignIn = () => {
   const [erreur, setErreur] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const loginStoreToken = useSelector((state) => state.login.userToken);
   const handlelogin = async (e) => {
     e.preventDefault();
 
@@ -27,10 +29,9 @@ const SignIn = () => {
       const userData = await response.json();
 
       await dispatch(loginUser(userData.body.token));
-      const token = userData.body.token;
-      console.log(token);
+      console.log("token du store", loginStoreToken);
       if (remenberMe) {
-        localStorage.setItem("token", token);
+        localStorage.setItem("token", loginStoreToken);
       }
       /***Deuxième requètte pour les infos user***/
       const userInfoResponse = await fetch(
@@ -38,14 +39,13 @@ const SignIn = () => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${loginStoreToken}`,
           },
         }
       );
       if (userInfoResponse.ok) {
         const userInfo = await userInfoResponse.json();
-        //récupération des data important dans un objet que je stoke dans
-        //login/userProfil grace a l'action infoUser
+
         const userData = {
           email: userInfo.body.email,
           firstName: userInfo.body.firstName,

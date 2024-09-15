@@ -1,16 +1,46 @@
+import { useState } from "react";
 import Button from "../Button/Button";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { infoUserName } from "../../redux/loginSlice";
 
 const EditName = () => {
   const loginStore = useSelector((state) => state.login);
+
+  const [newUserName, setNewUserName] = useState("");
+  console.log(newUserName);
+  console.log(loginStore.userProfil);
+  const dispatch = useDispatch();
+  const handlePutProfile = async (e) => {
+    e.preventDefault();
+
+    const token = loginStore.userToken;
+
+    const response = await fetch("http://localhost:3001/api/v1/user/profile", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userName: newUserName }),
+    });
+    if (response.ok) {
+      dispatch(infoUserName(newUserName));
+      const data = await response.json();
+      console.log("le user name a bien été modifié", data);
+    } else {
+      console.error("une erreur s'est produite");
+    }
+  };
   return (
     <section className="sign-in-content">
       <i className="fa fa-user-circle sign-in-icon"></i>
       <h1>Edit User info</h1>
-      <form>
+      <form onSubmit={handlePutProfile}>
         <div className="input-wrapper">
           <label htmlFor="username">Username</label>
           <input
+            value={newUserName}
+            onChange={(e) => setNewUserName(e.target.value)}
             type="text"
             id="username"
             placeholder={loginStore.userProfil.userName}

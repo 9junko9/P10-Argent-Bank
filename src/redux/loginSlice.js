@@ -23,9 +23,15 @@ export const loginSlice = createSlice({
     logoutInfoUser: (state) => {
       state.userProfil = null; // *****Remet a zéro les information user****//
     },
+
+    infoUserName: (state, action) => {
+      console.log("voici le payload info user Name :", action.payload);
+      state.userProfil.userName = action.payload;
+    },
   },
 });
 
-export const { loginUser, logoutUser, infoUser } = loginSlice.actions;
+export const { loginUser, logoutUser, infoUser, infoUserName } =
+  loginSlice.actions;
 
 export default loginSlice;
