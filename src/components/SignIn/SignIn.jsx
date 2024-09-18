@@ -5,6 +5,7 @@ import Button from "../Button/Button";
 
 import { useDispatch } from "react-redux";
 import { loginUser, infoUser } from "../../redux/loginSlice";
+import { logUser, getUserProfile } from "../../redux/api";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -17,51 +18,26 @@ const SignIn = () => {
   const handlelogin = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3001/api/v1/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    if (response.ok) {
-      const userData = await response.json();
-
+    try {
+      const userData = await logUser(email, password); // Utilisation de la fonction loginUser
       const token = userData.body.token;
       await dispatch(loginUser(token));
+
       if (remenberMe) {
         localStorage.setItem("token", token);
       }
-      /***Deuxième requètte pour les infos user***/
-      const userInfoResponse = await fetch(
-        "http://localhost:3001/api/v1/user/profile",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (userInfoResponse.ok) {
-        const userInfo = await userInfoResponse.json();
 
-        const userData = {
-          email: userInfo.body.email,
-          firstName: userInfo.body.firstName,
-          lastName: userInfo.body.lastName,
-          userName: userInfo.body.userName,
-        };
-        console.log("voici les infos du user :", userData);
-        await dispatch(infoUser(userData));
-        navigate("/user");
-      } else {
-        console.error(
-          "Erreur lors de la récupération des données de l'utilisateur:",
-          userInfoResponse.statusText
-        );
-      }
-    } else {
-      console.error("Erreur de serveur: " + response.statusText);
+      const userInfo = await getUserProfile(token); // Utilisation de la fonction getUserProfile
+      const userInfos = {
+        email: userInfo.body.email,
+        firstName: userInfo.body.firstName,
+        lastName: userInfo.body.lastName,
+        userName: userInfo.body.userName,
+      };
+      await dispatch(infoUser(userInfos));
+      navigate("/user");
+    } catch (error) {
+      console.error("Erreur lors de la connexion:", error);
       setErreur("Identifiants incorrects");
     }
   };

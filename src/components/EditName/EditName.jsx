@@ -3,6 +3,7 @@ import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { infoUserName } from "../../redux/loginSlice";
+import { changeUsername } from "../../redux/api";
 
 const EditName = () => {
   const navigate = useNavigate();
@@ -12,11 +13,11 @@ const EditName = () => {
   const dispatch = useDispatch();
 
   const [newUserName, setNewUserName] = useState(storeUserProfil.userName);
+  const token = loginStore.userToken;
   const handleChangeUserName = (e) => {
     setNewUserName(e.target.value);
   };
-  console.log(newUserName);
-  console.log(loginStore.userProfil);
+
   const handleCancel = () => {
     navigate("/user");
   };
@@ -24,20 +25,9 @@ const EditName = () => {
   const handleForm = async (e) => {
     e.preventDefault();
 
-    const token = loginStore.userToken;
-
-    const response = await fetch("http://localhost:3001/api/v1/user/profile", {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userName: newUserName }),
-    });
-    if (response.ok) {
+    const updateUserName = await changeUsername(newUserName, token);
+    if (updateUserName) {
       dispatch(infoUserName(newUserName));
-      const data = await response.json();
-      console.log("le user name a bien été modifié", data);
     } else {
       console.error("une erreur s'est produite");
     }
