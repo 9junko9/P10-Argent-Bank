@@ -5,7 +5,6 @@ import Button from "../Button/Button";
 
 import { useDispatch } from "react-redux";
 import { loginUser, infoUser } from "../../redux/loginSlice";
-import { useSelector } from "react-redux";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +13,7 @@ const SignIn = () => {
   const [erreur, setErreur] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const loginStoreToken = useSelector((state) => state.login.userToken);
+
   const handlelogin = async (e) => {
     e.preventDefault();
 
@@ -28,10 +27,10 @@ const SignIn = () => {
     if (response.ok) {
       const userData = await response.json();
 
-      await dispatch(loginUser(userData.body.token));
-      console.log("token du store", loginStoreToken);
+      const token = userData.body.token;
+      await dispatch(loginUser(token));
       if (remenberMe) {
-        localStorage.setItem("token", loginStoreToken);
+        localStorage.setItem("token", token);
       }
       /***Deuxième requètte pour les infos user***/
       const userInfoResponse = await fetch(
@@ -39,7 +38,7 @@ const SignIn = () => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${loginStoreToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -53,7 +52,7 @@ const SignIn = () => {
           userName: userInfo.body.userName,
         };
         console.log("voici les infos du user :", userData);
-        dispatch(infoUser(userData));
+        await dispatch(infoUser(userData));
         navigate("/user");
       } else {
         console.error(
@@ -63,7 +62,7 @@ const SignIn = () => {
       }
     } else {
       console.error("Erreur de serveur: " + response.statusText);
-      setErreur("Erreur de serveur: " + response.statusText);
+      setErreur("Identifiants incorrects");
     }
   };
 
@@ -107,7 +106,7 @@ const SignIn = () => {
             />
             <label htmlFor="remember-me">Remember me</label>
           </div>
-          <Button btnText={"Sign In"} />
+          <Button btnText={"Sign In"} className={"sign-in-button"} />
         </form>
         {erreur && <p className="errorConexion">{erreur}</p>}
       </section>

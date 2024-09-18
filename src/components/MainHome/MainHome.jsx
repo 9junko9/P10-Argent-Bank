@@ -1,11 +1,25 @@
 import Feature from "../Features/Feature.jsx";
 import Hero from "../Hero/Hero.jsx";
+import featuresJson from "../../feature.json";
 
 const MainHome = () => {
+  const features = featuresJson.features;
+  console.log(features);
   return (
     <>
       <Hero />
-      <Feature />
+      <section className="features">
+        <h2 className="sr-only">Features</h2>
+        {features.map((feature, index) => (
+          <Feature
+            key={index}
+            paragraph={feature.paragraph}
+            image={feature.image}
+            title={feature.title}
+            alt={feature.alt}
+          />
+        ))}
+      </section>
     </>
   );
 };

@@ -1,9 +1,25 @@
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/img/argentBankLogo.png";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const Navigation = () => {
+  const dispatch = useDispatch();
   const loginStore = useSelector((state) => state.login);
+  const token = useSelector((state) => state.login.userToken);
+  if (token) {
+    console.log(
+      "le token est présent dans le store donc je change Sign In en Sing out",
+      token
+    );
+  } else {
+    console.log("le token n'est pas présent donc je laisse Sign IN");
+  }
+
+  const handleRedirectHome = () => {
+    localStorage.removeItem("token");
+    console.log("Token suprimé du local storage");
+    dispatch(loginStore("null"));
+  };
   return (
     <nav className="main-nav">
       <NavLink className="main-nav-logo" to="/">
@@ -20,10 +36,22 @@ const Navigation = () => {
           loginStore.userProfil.userName && (
             <p>{loginStore.userProfil.userName}</p>
           )}
-        <NavLink className="main-nav-item" to="/sign-in">
-          <i className="fa fa-user-circle"></i>
-          Sign In
-        </NavLink>
+        {/* Conditionnellement rendu le lien "Sign In" ou "Sign Out" */}
+        {token ? (
+          <NavLink
+            className="main-nav-item"
+            to="/"
+            onClick={handleRedirectHome}
+          >
+            <i className="fa fa-user-circle"></i>
+            Sign Out
+          </NavLink>
+        ) : (
+          <NavLink className="main-nav-item" to="/sign-in">
+            <i className="fa fa-user-circle"></i>
+            Sign In
+          </NavLink>
+        )}
       </div>
     </nav>
   );
