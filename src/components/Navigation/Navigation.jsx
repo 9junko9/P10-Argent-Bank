@@ -1,6 +1,8 @@
-import { NavLink } from "react-router-dom";
 import logo from "../../assets/img/argentBankLogo.png";
 import { useSelector, useDispatch } from "react-redux";
+import { Link, NavLink } from "react-router-dom";
+import { logoutUser } from "../../redux/loginSlice";
+import { LuLogOut } from "react-icons/lu";
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -18,7 +20,7 @@ const Navigation = () => {
   const handleRedirectHome = () => {
     localStorage.removeItem("token");
     console.log("Token suprimé du local storage");
-    dispatch(loginStore("null"));
+    dispatch(logoutUser());
   };
   return (
     <nav className="main-nav">
@@ -30,29 +32,35 @@ const Navigation = () => {
         />
         <h1 className="sr-only">Argent Bank</h1>
       </NavLink>
-      <div className="login">
-        {loginStore &&
-          loginStore.userProfil &&
-          loginStore.userProfil.userName && (
-            <p>{loginStore.userProfil.userName}</p>
+      <>
+        <div className="login">
+          {/* Conditionnellement rendu le lien "Sign In" ou "Sign Out" */}
+          {loginStore &&
+            loginStore.userProfil &&
+            loginStore.userProfil.userName && (
+              <Link to="/user" className="userName">
+                <i className="fa fa-user-circle"></i>
+                <p>{loginStore.userProfil.userName}</p>
+              </Link>
+            )}
+
+          {token ? (
+            <NavLink
+              className="main-nav-item"
+              to="/"
+              onClick={handleRedirectHome}
+            >
+              <LuLogOut />
+              Sign Out
+            </NavLink>
+          ) : (
+            <NavLink className="main-nav-item" to="/sign-in">
+              <i className="fa fa-user-circle"></i>
+              Sign In
+            </NavLink>
           )}
-        {/* Conditionnellement rendu le lien "Sign In" ou "Sign Out" */}
-        {token ? (
-          <NavLink
-            className="main-nav-item"
-            to="/"
-            onClick={handleRedirectHome}
-          >
-            <i className="fa fa-user-circle"></i>
-            Sign Out
-          </NavLink>
-        ) : (
-          <NavLink className="main-nav-item" to="/sign-in">
-            <i className="fa fa-user-circle"></i>
-            Sign In
-          </NavLink>
-        )}
-      </div>
+        </div>
+      </>
     </nav>
   );
 };

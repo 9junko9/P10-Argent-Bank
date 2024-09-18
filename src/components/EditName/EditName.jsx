@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { infoUserName } from "../../redux/loginSlice";
-import { changeUsername } from "../../redux/api";
+import { changeUsername } from "../../core/api";
 
 const EditName = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const EditName = () => {
     e.preventDefault();
 
     const updateUserName = await changeUsername(newUserName, token);
-    if (updateUserName) {
+    if (updateUserName.status === 200) {
       dispatch(infoUserName(newUserName));
     } else {
       console.error("une erreur s'est produite");

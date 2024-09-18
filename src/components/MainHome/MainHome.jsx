@@ -1,6 +1,6 @@
 import Feature from "../Features/Feature.jsx";
 import Hero from "../Hero/Hero.jsx";
-import featuresJson from "../../feature.json";
+import featuresJson from "../../data/feature.json";
 
 const MainHome = () => {
   const features = featuresJson.features;
@@ -12,7 +12,7 @@ const MainHome = () => {
         <h2 className="sr-only">Features</h2>
         {features.map((feature, index) => (
           <Feature
-            key={index}
+            key={"feature" + index}
             paragraph={feature.paragraph}
             image={feature.image}
             title={feature.title}

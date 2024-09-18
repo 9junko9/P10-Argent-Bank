@@ -5,7 +5,7 @@ import Button from "../Button/Button";
 
 import { useDispatch } from "react-redux";
 import { loginUser, infoUser } from "../../redux/loginSlice";
-import { logUser, getUserProfile } from "../../redux/api";
+import { logUser, getUserProfile } from "../../core/api";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ const SignIn = () => {
     e.preventDefault();
 
     try {
-      const userData = await logUser(email, password); // Utilisation de la fonction loginUser
+      const userData = await logUser(email, password);
       const token = userData.body.token;
       await dispatch(loginUser(token));
 
@@ -27,7 +27,7 @@ const SignIn = () => {
         localStorage.setItem("token", token);
       }
 
-      const userInfo = await getUserProfile(token); // Utilisation de la fonction getUserProfile
+      const userInfo = await getUserProfile(token);
       const userInfos = {
         email: userInfo.body.email,
         firstName: userInfo.body.firstName,

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Accounts from "../../account";
+import Accounts from "../../data/account";
 import Account from "../Account/Account";
 import Button from "../Button/Button";
 
@@ -8,7 +8,8 @@ const User = () => {
   const username = useSelector((state) => state.login.userProfil.userName);
 
   const navigate = useNavigate();
-  const handleToogle = () => {
+  const handleDisplayEdit = (e) => {
+    e.preventDefault();
     navigate("/editUser");
   };
   return (
@@ -22,13 +23,13 @@ const User = () => {
         <Button
           className={"edit-button"}
           btnText={"Edit Name"}
-          onClick={handleToogle}
+          onClick={handleDisplayEdit}
         ></Button>
       </div>
       <h2 className="sr-only">Accounts</h2>
       {Accounts.map((account, index) => (
         <Account
-          key={index}
+          key={"account" + index}
           title={account.title}
           amount={account.amount}
           description={account.description}

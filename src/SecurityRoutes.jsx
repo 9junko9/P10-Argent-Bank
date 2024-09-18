@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { PropTypes } from "prop-types";
-// importation du store
+
 import { useSelector } from "react-redux";
 
 const SecurityRoutes = ({ children }) => {
