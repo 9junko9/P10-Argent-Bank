@@ -21,7 +21,7 @@ const SignIn = () => {
     try {
       const userData = await logUser(email, password);
       const token = userData.body.token;
-      await dispatch(loginUser(token));
+      dispatch(loginUser(token));
 
       if (remenberMe) {
         localStorage.setItem("token", token);
@@ -34,7 +34,7 @@ const SignIn = () => {
         lastName: userInfo.body.lastName,
         userName: userInfo.body.userName,
       };
-      await dispatch(infoUser(userInfos));
+      dispatch(infoUser(userInfos));
       navigate("/user");
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);

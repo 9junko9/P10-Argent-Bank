@@ -23,15 +23,20 @@ const EditName = () => {
   };
 
   const handleForm = async (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    const updateUserName = await changeUsername(newUserName, token);
-    if (updateUserName.status === 200) {
-      dispatch(infoUserName(newUserName));
-    } else {
-      console.error("une erreur s'est produite");
+      const updateUserName = await changeUsername(newUserName, token);
+      if (updateUserName.status === 200) {
+        dispatch(infoUserName(newUserName));
+      } else {
+        console.error("une erreur s'est produite");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
+
   return (
     <main className="main bg-dark">
       <section className="sign-in-content toogle-edit-name">
