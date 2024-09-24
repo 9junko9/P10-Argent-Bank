@@ -23,10 +23,6 @@ const SignIn = () => {
       const token = userData.body.token;
       dispatch(loginUser(token));
 
-      if (remenberMe) {
-        localStorage.setItem("token", token);
-      }
-
       const userInfo = await getUserProfile(token);
       const userInfos = {
         email: userInfo.body.email,
